@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <rect width="128" height="128" fill="#000"/>
+  <style>
+    text { font-family: 'JetBrains Mono', 'SF Mono', 'Menlo', monospace; fill: #fff; }
+    .grid { font-size: 8px; opacity: 0.18; }
+    .grid-mid { font-size: 8px; opacity: 0.35; }
+    .vg { font-size: 48px; font-weight: 700; opacity: 1; }
+  </style>
+
+  <!-- Background character grid -->
+  <text class="grid" x="2" y="8">“—ž”ƒ‘•›–‚œ’˜Ÿ×ŠŒŽ™</text>
+  <text class="grid" x="2" y="16">Ž™†+š‹„ˆ“ž—”/ƒ•–’œ˜</text>
+  <text class="grid" x="2" y="24">œ˜‚Ÿ×ŠŒŽ™†š‹„ˆ“ž—</text>
+  <text class="grid" x="2" y="32">ž—”ƒ‘•›–‚œ’˜Ÿ·ŠŒ%Ž™†</text>
+  <text class="grid-mid" x="2" y="40">™+š‹„ˆ“ž—”/ƒ•–’œ˜‚Ÿ</text>
+  <text class="grid-mid" x="2" y="48">‚Ÿ×ŠŒŽ™†š‹„ˆ“ž—”ƒ</text>
+
+  <!-- VG letters -->
+  <text class="vg" x="10" y="88">VG</text>
+
+  <!-- More grid below -->
+  <text class="grid-mid" x="2" y="100">×ŠŒŽ™†š‹„ˆ“ž—”ƒ‘•</text>
+  <text class="grid" x="2" y="108">‘•›–‚œ’˜Ÿ·ŠŒ#Ž™†+š</text>
+  <text class="grid" x="2" y="116">š‹„ˆ“ž—”ƒ•–’œ˜‚Ÿ×Š</text>
+  <text class="grid" x="2" y="124">ŠŒŽ™†š‹„ˆ“ž—”ƒ‘•›–</text>
+</svg>

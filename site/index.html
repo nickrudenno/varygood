@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VaryGood — Design System Generator for Figma</title>
+  <meta name="description" content="Generate a complete, production-ready design system in Figma. Variables, styles, components, and documentation — all from a single plugin.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #fff;
+      --fg: #000;
+      --fg-dim: #666;
+      --fg-dimmer: #999;
+      --rule: #e5e5e5;
+      --feature-bg: #fff;
+      --feature-border: #e5e5e5;
+      --nav-bg: #ffffffee;
+      --status-done: #000;
+      --status-done-bg: #00000008;
+      --status-done-border: #00000020;
+      --status-planned: #999;
+      --status-planned-bg: #99999908;
+      --status-planned-border: #99999920;
+    }
+
+    [data-theme="dark"] {
+      --bg: #000;
+      --fg: #fff;
+      --fg-dim: #999;
+      --fg-dimmer: #666;
+      --rule: #222;
+      --feature-bg: #000;
+      --feature-border: #333;
+      --nav-bg: #000000ee;
+      --status-done: #fff;
+      --status-done-bg: #ffffff08;
+      --status-done-border: #ffffff20;
+      --status-planned: #666;
+      --status-planned-bg: #66666608;
+      --status-planned-border: #66666620;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--bg);
+      color: var(--fg);
+    }
+
+    body {
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .gutter {
+      width: 1px;
+      flex-shrink: 0;
+      background: var(--rule);
+    }
+
+    .main {
+      flex: 1;
+      padding: 0 32px 0 32px;
+      overflow: clip;
+    }
+
+    .content {
+      max-width: 640px;
+    }
+
+    /* ── Nav ── */
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: var(--nav-bg);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--rule);
+      padding: 12px 0;
+      margin-left: -32px;
+      padding-left: 32px;
+      padding-right: 48px;
+      margin-right: calc(-100vw + 100%);
+    }
+
+    nav .nav-inner {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+      padding-right: 8px;
+    }
+
+    nav a {
+      color: var(--fg-dimmer);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    nav a:hover {
+      color: var(--fg);
+    }
+
+    .theme-toggle {
+      margin-left: auto;
+      background: none;
+      border: 1px solid var(--fg-dimmer);
+      color: var(--fg);
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 12px;
+      padding: 2px 10px;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .theme-toggle:hover {
+      border-color: var(--fg);
+    }
+
+    /* ── Hero ── */
+
+    .hero {
+      min-height: 280px;
+      height: 75vh;
+      display: flex;
+      align-items: center;
+      padding: 64px 0 40px;
+      position: relative;
+      margin-left: -32px;
+      margin-right: calc(-100vw + 100%);
+      padding-left: 32px;
+      padding-right: 32px;
+    }
+
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 14px;
+      line-height: 1;
+      white-space: pre;
+      user-select: none;
+      z-index: 0;
+    }
+
+    .hero-grid span {
+      color: var(--fg);
+      opacity: 0;
+      transition: opacity 0.8s ease-out;
+    }
+
+    .hero-grid span.active {
+      opacity: 1;
+      transition: opacity 0.05s;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .hero-title {
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 48px;
+      font-weight: 700;
+      letter-spacing: -1.5px;
+      line-height: 1.1;
+      color: var(--fg);
+    }
+
+    .hero-sub {
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 16px;
+      color: var(--fg-dim);
+      margin-top: 12px;
+    }
+
+    /* ── Sections ── */
+
+    section {
+      padding: 48px 0;
+    }
+
+    .section-rule {
+      border: none;
+      border-top: 1px solid var(--rule);
+      margin-left: -32px;
+      margin-right: calc(-100vw + 100%);
+    }
+
+    .section-layout {
+      display: flex;
+      gap: 64px;
+    }
+
+    .section-label {
+      width: 200px;
+      flex-shrink: 0;
+      font-size: 14px;
+      color: var(--fg-dim);
+      padding-top: 2px;
+    }
+
+    .section-body {
+      flex: 1;
+      max-width: 640px;
+    }
+
+    p + p { margin-top: 16px; }
+
+    /* ── Links ── */
+
+    a {
+      color: var(--fg);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      text-decoration-color: var(--fg-dimmer);
+      transition: text-decoration-color 0.15s;
+    }
+
+    a:hover {
+      text-decoration-color: var(--fg);
+    }
+
+    nav a {
+      text-decoration: none;
+    }
+
+    /* ── Lists ── */
+
+    ul, ol {
+      padding-left: 20px;
+      list-style: none;
+    }
+
+    li {
+      margin-top: 8px;
+      position: relative;
+      padding-left: 4px;
+    }
+
+    li::before {
+      content: "▏";
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      position: absolute;
+      left: -16px;
+      color: var(--fg-dimmer);
+    }
+
+    /* ── Changelog ── */
+
+    .changelog-entry {
+      margin-bottom: 32px;
+    }
+
+    .changelog-entry:last-child {
+      margin-bottom: 0;
+    }
+
+    .changelog-version {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-weight: 700;
+      color: var(--fg);
+    }
+
+    .changelog-date {
+      color: var(--fg-dimmer);
+      margin-left: 8px;
+    }
+
+    .changelog-entry ul {
+      margin-top: 8px;
+    }
+
+    /* ── Roadmap ── */
+
+    .roadmap-item {
+      display: flex;
+      gap: 12px;
+      align-items: baseline;
+      margin-top: 12px;
+    }
+
+    .roadmap-item:first-child {
+      margin-top: 0;
+    }
+
+    .status {
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      flex-shrink: 0;
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: 2px;
+      min-width: 88px;
+      text-align: center;
+    }
+
+    .status-done {
+      color: var(--status-done);
+      background: var(--status-done-bg);
+      border: 1px solid var(--status-done-border);
+    }
+
+    .status-planned {
+      color: var(--status-planned);
+      background: var(--status-planned-bg);
+      border: 1px solid var(--status-planned-border);
+    }
+
+    /* ── Features grid ── */
+
+    .features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--feature-border);
+      border: 1px solid var(--feature-border);
+    }
+
+    .feature {
+      padding: 16px;
+      background: var(--feature-bg);
+    }
+
+    .feature-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .feature-desc {
+      color: var(--fg-dim);
+      font-size: 13px;
+    }
+
+    /* ── Links list ── */
+
+    .link-item {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .link-item:first-child { margin-top: 0; }
+
+    .link-desc {
+      color: var(--fg-dimmer);
+    }
+
+    /* ── Footer ── */
+
+    footer {
+      padding: 48px 0 64px;
+      color: var(--fg-dimmer);
+    }
+
+    
+
+    /* ── Utilities ── */
+
+    .dim { color: var(--fg-dim); }
+    .dimmer { color: var(--fg-dimmer); }
+
+    @media (max-width: 768px) {
+      .section-layout {
+        flex-direction: column;
+        gap: 8px;
+      }
+      .section-label {
+        width: auto;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .gutter { display: none; }
+      .main { padding: 0 16px; }
+      nav { margin-left: -16px; padding-left: 16px; margin-right: -16px; padding-right: 16px; }
+      .features { grid-template-columns: 1fr; }
+      .hero-grid { font-size: 10px; }
+      .hero { margin-left: -16px; margin-right: -16px; padding-left: 16px; padding-right: 16px; }
+      .hero-title { font-size: 32px; }
+      .section-rule { margin-left: -16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page">
+
+    <!-- Vertical gutter line -->
+    <div class="gutter"></div>
+
+    <!-- Main content -->
+    <div class="main">
+
+      <!-- Nav -->
+      <nav>
+        <div class="nav-inner">
+          <a href="#top" style="font-weight: 700;">VaryGood</a>
+          <a href="#about">About</a>
+          <a href="#links">Links</a>
+          <a href="#changelog">Changelog</a>
+          <a href="#roadmap">Roadmap</a>
+          <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle light/dark mode">● dark</button>
+        </div>
+      </nav>
+
+      <!-- Hero -->
+      <div class="hero" id="top">
+        <div class="hero-grid" id="heroGrid"></div>
+        <div class="hero-content">
+          <div class="hero-title">VaryGood</div>
+          <div class="hero-sub">Design system generator for Figma</div>
+        </div>
+      </div>
+
+      <!-- About -->
+      <hr class="section-rule">
+      <section id="about">
+        <div class="section-layout">
+          <div class="section-label">About</div>
+          <div class="section-body">
+            <p>
+              VaryGood is a Figma plugin that generates a complete, production-ready
+              design system from a guided configuration wizard. Define your colours,
+              typography, spacing, radius, and shadows &mdash; and the plugin builds
+              all the variables, styles, components, and documentation you need.
+            </p>
+            <p>
+              Built around <a href="https://base-ui.com" target="_blank">Base UI</a>
+              conventions, VaryGood produces perceptually uniform OKLCH colour scales,
+              semantic tokens with light and dark mode support, six fully variable-bound
+              components (Button, Input, Select, Checkbox, Radio, Switch), an icon slot
+              system, and an auto-generated documentation page &mdash; all wired together
+              with native Figma variables and scoped for publishing.
+            </p>
+            <p>
+              When you need to make changes, VaryGood tracks every edit and offers safe
+              incremental updates that preserve your customisations. The Selection Inspector
+              can scan any frame, detect unstyled elements, and bind matching variables
+              automatically &mdash; or swap conflicting component instances in bulk.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Features -->
+      <hr class="section-rule">
+      <section>
+        <div class="section-layout">
+          <div class="section-label">Features</div>
+          <div class="section-body">
+            <div class="features">
+              <div class="feature">
+                <div class="feature-title">Colour Scales</div>
+                <div class="feature-desc">OKLCH-based 11-step scales with per-step overrides and granular control over lightness, saturation, and hue shift</div>
+              </div>
+              <div class="feature">
+                <div class="feature-title">Semantic Tokens</div>
+                <div class="feature-desc">Light &amp; dark mode tokens mapped from your palettes with a guided visual flow, inline swatch picker, and live card preview</div>
+              </div>
+              <div class="feature">
+                <div class="feature-title">Typography</div>
+                <div class="feature-desc">Searchable font picker, configurable type scale (xs&ndash;8xl), semantic role mappings, variable-bound text styles with cap-height trim</div>
+              </div>
+              <div class="feature">
+                <div class="feature-title">Spacing &amp; Radius</div>
+                <div class="feature-desc">4px or 8px base unit with derived multiplier scale. Radius presets from 0&ndash;24px generating a full xs&ndash;full variable set</div>
+              </div>
+              <div class="feature">
+                <div class="feature-title">Components</div>
+                <div class="feature-desc">Button (4 variants, 3 sizes, 5 states), Input, Select, Checkbox, Radio, Switch &mdash; all bound to variables with icon slots</div>
+              </div>
+              <div class="feature">
+                <div class="feature-title">Icon Slot System</div>
+                <div class="feature-desc">Master icon component with semantic colour variants. Set up once, use everywhere &mdash; components reference icon slots via instance swap</div>
+              </div>
+              <div class="feature">
+                <div class="feature-title">Safe Updates</div>
+                <div class="feature-desc">Real-time change tracking across every step. Incremental patching updates variables, styles, and component docs without destroying customisations</div>
+              </div>
+              <div class="feature">
+                <div class="feature-title">Selection Inspector</div>
+                <div class="feature-desc">Scan frames for unstyled elements, auto-match variables, search for similar across the page, detect component conflicts, and swap instances in bulk</div>
+              </div>
+              <div class="feature">
+                <div class="feature-title">Shadows &amp; Elevation</div>
+                <div class="feature-desc">Optional shadow effect styles across 7 levels (xs&ndash;2xl, none) with editable values and safe add/remove</div>
+              </div>
+              <div class="feature">
+                <div class="feature-title">Documentation Page</div>
+                <div class="feature-desc">Auto-generated &ldquo;VaryGood Design System&rdquo; page with colour swatches, typography samples, spacing scale, and radius preview</div>
+              </div>
+              <div class="feature">
+                <div class="feature-title">Global Colours</div>
+                <div class="feature-desc">Single-value colour primitives (White, Black, custom) alongside palette scales for absolute tokens</div>
+              </div>
+              <div class="feature">
+                <div class="feature-title">Component Docs</div>
+                <div class="feature-desc">Markdown descriptions embedded in every component set &mdash; anatomy, token bindings, layout specs, and Base UI links</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Links -->
+      <hr class="section-rule">
+      <section id="links">
+        <div class="section-layout">
+          <div class="section-label">Links</div>
+          <div class="section-body">
+            <div class="link-item">
+              <a href="#" target="_blank">Figma Community</a>
+              <span class="dimmer">&mdash; coming soon</span>
+            </div>
+            <div class="link-item">
+              <a href="#" target="_blank">GitHub Repository</a>
+              <span class="dimmer">&mdash; coming soon</span>
+            </div>
+            <div class="link-item">
+              <a href="https://base-ui.com" target="_blank">Base UI</a>
+              <span class="dimmer">&mdash; the component library VaryGood follows</span>
+            </div>
+            <div class="link-item">
+              <a href="https://bottosson.github.io/posts/oklab/" target="_blank">OKLCH Colour Space</a>
+              <span class="dimmer">&mdash; the perceptual colour model behind our scales</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Changelog -->
+      <hr class="section-rule">
+      <section id="changelog">
+        <div class="section-layout">
+          <div class="section-label">Changelog</div>
+          <div class="section-body">
+            <div class="changelog-entry">
+              <span class="changelog-version">v0.1.0</span>
+              <span class="changelog-date">February 2026</span>
+              <ul>
+                <li>Initial release of VaryGood</li>
+              </ul>
+              <ul style="margin-top: 16px;">
+                <li><strong>Configuration Wizard</strong> &mdash; 5-step guided setup: Setup, Colours, Typography, Extras, Tokens</li>
+                <li><strong>Colour System</strong> &mdash; OKLCH-based 11-step colour scales with per-step overrides, lightness/darkness/hue/saturation controls, and quick-add presets (Danger, Success, Warning, Info)</li>
+                <li><strong>Global Colours</strong> &mdash; Single-value primitives (White, Black, custom) alongside palette scales</li>
+                <li><strong>Dark Mode</strong> &mdash; Light and dark mode variable modes with semantic mappings for both</li>
+                <li><strong>Semantic Token Mapping</strong> &mdash; Guided visual flow with inline swatch picker, categorised token list, and live card preview reflecting your choices</li>
+                <li><strong>Typography</strong> &mdash; Searchable font picker across all available Figma fonts, configurable type scale (xs&ndash;8xl), semantic role mappings (heading-xl through caption/code), variable-bound text styles with cap-height to baseline trim</li>
+                <li><strong>Spacing</strong> &mdash; 4px or 8px base unit with derived multiplier scale (0.25&ndash;24&times;) and live spacing preview</li>
+                <li><strong>Radius</strong> &mdash; Base value presets (0&ndash;24px) generating a full variable set (xs, sm, md, lg, xl, 2xl, full)</li>
+                <li><strong>Shadows</strong> &mdash; Optional elevation effect styles across 7 levels (xs&ndash;2xl, none) with editable shadow values</li>
+                <li><strong>Components</strong> &mdash; Button (Filled, Outline, Ghost, Danger &times; sm/md/lg &times; default/hover/pressed/loading/disabled), Input, Select, Checkbox, Radio, Switch &mdash; all fully bound to variables</li>
+                <li><strong>Icon Slot System</strong> &mdash; Master icon component with 5 semantic colour variants (primary-foreground, foreground, danger-foreground, disabled-foreground, foreground-muted), setup instructions frame, and instance swap support in Button, Input, and Select</li>
+                <li><strong>Component Documentation</strong> &mdash; Markdown descriptions embedded in every ComponentSet with anatomy, token bindings, layout specs, and Base UI reference links</li>
+                <li><strong>Documentation Page</strong> &mdash; Auto-generated &ldquo;VaryGood Design System&rdquo; page with colour swatches, typography samples, spacing scale, and radius preview</li>
+                <li><strong>Safe Incremental Updates</strong> &mdash; Real-time change tracking across every wizard step with diff indicators, floating Review &amp; Apply bar, and safe patching of variables, styles, and component docs without destroying customisations</li>
+                <li><strong>Selection Inspector</strong> &mdash; Scan any selection for fills, strokes, and text styles; auto-match to VaryGood variables; apply individually or in bulk; search for similar across the page; full undo support</li>
+                <li><strong>Component Conflict Detection</strong> &mdash; Detect non-VG components sharing the same name, archive conflicting components, and bulk-swap instances to VaryGood equivalents</li>
+                <li><strong>Live Selection Listening</strong> &mdash; Selection changes trigger debounced auto-rescan in the inspector</li>
+                <li><strong>Existing File Detection</strong> &mdash; On open, shows VG vs total counts for variables, text styles, effect styles, and components with quick actions to edit, export, or inspect</li>
+                <li><strong>Organised Pages</strong> &mdash; Components on &ldquo;VaryGood Components&rdquo;, icons on &ldquo;VaryGood Icons&rdquo;, documentation on &ldquo;VaryGood Design System&rdquo; &mdash; avoids overwriting existing user pages</li>
+                <li><strong>Variable Scoping</strong> &mdash; Proper scope assignment (STROKE_COLOR, TEXT_FILL, FRAME_FILL, CORNER_RADIUS, GAP, WIDTH_HEIGHT) for clean variable pickers</li>
+                <li><strong>Post-generation navigation</strong> &mdash; After first-time generation, automatically navigates to the Design System page</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Roadmap -->
+      <hr class="section-rule">
+      <section id="roadmap">
+        <div class="section-layout">
+          <div class="section-label">Roadmap</div>
+          <div class="section-body">
+            <div class="roadmap-item">
+              <span class="status status-done">done</span>
+              <span>5-step configuration wizard with live preview</span>
+            </div>
+            <div class="roadmap-item">
+              <span class="status status-done">done</span>
+              <span>OKLCH colour scales with dark mode</span>
+            </div>
+            <div class="roadmap-item">
+              <span class="status status-done">done</span>
+              <span>Typography, spacing, radius, and shadow generation</span>
+            </div>
+            <div class="roadmap-item">
+              <span class="status status-done">done</span>
+              <span>Base UI components (Button, Input, Select, Checkbox, Radio, Switch)</span>
+            </div>
+            <div class="roadmap-item">
+              <span class="status status-done">done</span>
+              <span>Icon slot system with semantic colour variants</span>
+            </div>
+            <div class="roadmap-item">
+              <span class="status status-done">done</span>
+              <span>Safe incremental updates with change tracking</span>
+            </div>
+            <div class="roadmap-item">
+              <span class="status status-done">done</span>
+              <span>Selection Inspector with scan, match, apply, and undo</span>
+            </div>
+            <div class="roadmap-item">
+              <span class="status status-done">done</span>
+              <span>Component conflict detection and instance swap</span>
+            </div>
+            <div class="roadmap-item">
+              <span class="status status-done">done</span>
+              <span>Search for similar (bulk variable binding across page)</span>
+            </div>
+            <div class="roadmap-item">
+              <span class="status status-done">done</span>
+              <span>Auto-generated documentation page</span>
+            </div>
+            <div class="roadmap-item">
+              <span class="status status-done">done</span>
+              <span>Component description markdown</span>
+            </div>
+            <div class="roadmap-item">
+              <span class="status status-planned">planned</span>
+              <span>Preset icon pack integration (Lucide, Heroicons, Material, Font Awesome)</span>
+            </div>
+            <div class="roadmap-item">
+              <span class="status status-done">done</span>
+              <span>Token export (CSS, Tailwind, DTCG JSON, TypeScript)</span>
+            </div>
+            <div class="roadmap-item">
+              <span class="status status-planned">planned</span>
+              <span>Import from existing file (analyse, reconcile, merge/archive)</span>
+            </div>
+            <div class="roadmap-item">
+              <span class="status status-planned">planned</span>
+              <span>Additional component kits (shadcn/ui, Radix UI)</span>
+            </div>
+            <div class="roadmap-item">
+              <span class="status status-planned">planned</span>
+              <span>Theme switching (swap entire colour schemes)</span>
+            </div>
+            <div class="roadmap-item">
+              <span class="status status-planned">planned</span>
+              <span>Sync with code repos (GitHub integration)</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <hr class="section-rule">
+      <footer>
+        <div class="section-layout">
+          <div class="section-label"></div>
+          <div class="section-body">
+            <span class="dimmer">VaryGood &mdash; 2026</span>
+          </div>
+        </div>
+      </footer>
+
+    </div>
+  </div>
+
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const btn = document.querySelector('.theme-toggle');
+      if (html.dataset.theme === 'light') {
+        html.dataset.theme = 'dark';
+        btn.textContent = '☀ light';
+      } else {
+        html.dataset.theme = 'light';
+        btn.textContent = '● dark';
+      }
+      localStorage.setItem('vg-theme', html.dataset.theme);
+    }
+
+    (function() {
+      const saved = localStorage.getItem('vg-theme');
+      if (saved) {
+        document.documentElement.dataset.theme = saved;
+        const btn = document.querySelector('.theme-toggle');
+        if (btn) btn.textContent = saved === 'light' ? '● dark' : '☀ light';
+      }
+    })();
+
+    (function initHeroGrid() {
+      var CHARS = '▁▂▃▄▅▆▇█▀▔▏▎▍▌▋▊▉▐▕▖▗▘▙▚▛▜▝▞▟░▒▓/\\—·+×#@%&'.split('');
+      var RADIUS = 4;
+
+      var grid = document.getElementById('heroGrid');
+      if (!grid) return;
+
+      var cellW = 0, cellH = 0, cols = 0, rows = 0;
+      var cells = [];
+
+      function measure() {
+        var test = document.createElement('span');
+        test.textContent = 'X';
+        test.style.position = 'absolute';
+        test.style.visibility = 'hidden';
+        grid.appendChild(test);
+        cellW = test.offsetWidth || 8.4;
+        cellH = test.offsetHeight || 14;
+        grid.removeChild(test);
+      }
+
+      function build() {
+        measure();
+        var w = grid.offsetWidth;
+        var h = grid.offsetHeight;
+        var newCols = Math.floor(w / cellW);
+        var newRows = Math.floor(h / cellH);
+        if (newCols === cols && newRows === rows && cells.length > 0) return;
+        cols = newCols;
+        rows = newRows;
+
+        grid.innerHTML = '';
+        cells = [];
+        var html = '';
+        for (var r = 0; r < rows; r++) {
+          for (var c = 0; c < cols; c++) {
+            html += '<span> </span>';
+          }
+          html += '\n';
+        }
+        grid.innerHTML = html;
+
+        var spans = grid.querySelectorAll('span');
+        cells = Array.prototype.slice.call(spans);
+      }
+
+      function activate(col, row) {
+        if (col < 0 || col >= cols || row < 0 || row >= rows) return;
+        var cell = cells[row * cols + col];
+        if (!cell) return;
+        cell.textContent = CHARS[Math.floor(Math.random() * CHARS.length)];
+        cell.classList.add('active');
+        clearTimeout(cell._t);
+        cell._t = setTimeout(function() {
+          cell.classList.remove('active');
+          cell.textContent = ' ';
+        }, 400 + Math.random() * 500);
+      }
+
+      var ticking = false;
+      grid.parentElement.addEventListener('mousemove', function(e) {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(function() {
+          var rect = grid.getBoundingClientRect();
+          var mx = e.clientX - rect.left;
+          var my = e.clientY - rect.top;
+          var centerCol = Math.floor(mx / cellW);
+          var centerRow = Math.floor(my / cellH);
+
+          activate(centerCol, centerRow);
+          var count = 4 + Math.floor(Math.random() * 6);
+          for (var i = 0; i < count; i++) {
+            var dc = Math.round((Math.random() - 0.5) * RADIUS * 2);
+            var dr = Math.round((Math.random() - 0.5) * RADIUS * 2);
+            activate(centerCol + dc, centerRow + dr);
+          }
+          ticking = false;
+        });
+      });
+
+      build();
+      window.addEventListener('resize', function() { cells = []; build(); });
+    })();
+  </script>
+
+</body>
+</html>
