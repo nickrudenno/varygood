@@ -2,7 +2,7 @@
 <html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>VaryGood — Design System Generator for Figma</title>
   <meta name="description" content="Generate a complete, production-ready design system in Figma. Variables, styles, components, and documentation — all from a single plugin.">
 
@@ -68,6 +68,7 @@
       scroll-behavior: smooth;
       background: var(--bg);
       color: var(--fg);
+      overflow-x: hidden;
     }
 
     body {
@@ -75,6 +76,9 @@
       font-size: 14px;
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      touch-action: pan-y;
+      -webkit-text-size-adjust: 100%;
     }
 
     .page {
@@ -409,10 +413,13 @@
       .gutter { display: none; }
       .main { padding: 0 16px; }
       nav { margin-left: -16px; padding-left: 16px; margin-right: -16px; padding-right: 16px; }
+      nav .nav-inner { gap: 16px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      nav a { white-space: nowrap; font-size: 12px; }
       .features { grid-template-columns: 1fr; }
       .hero-grid { font-size: 10px; }
       .hero { margin-left: -16px; margin-right: -16px; padding-left: 16px; padding-right: 16px; }
       .hero-title { font-size: 32px; }
+      .hero-sub { font-size: 13px; }
       .section-rule { margin-left: -16px; }
     }
   </style>
