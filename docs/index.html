@@ -68,7 +68,7 @@
       scroll-behavior: smooth;
       background: var(--bg);
       color: var(--fg);
-      overflow-x: hidden;
+      overflow-x: clip;
     }
 
     body {
@@ -76,7 +76,7 @@
       font-size: 14px;
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
+      overflow-x: clip;
       touch-action: pan-y;
       -webkit-text-size-adjust: 100%;
     }
@@ -95,7 +95,6 @@
     .main {
       flex: 1;
       padding: 0 32px 0 32px;
-      overflow: clip;
     }
 
     .content {
@@ -138,19 +137,35 @@
 
     .theme-toggle {
       margin-left: auto;
-      background: none;
-      border: 1px solid var(--fg-dimmer);
-      color: var(--fg);
-      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      font-size: 12px;
-      padding: 2px 10px;
-      border-radius: 2px;
+      position: relative;
+      width: 36px;
+      height: 20px;
+      background: var(--fg);
+      border: none;
+      border-radius: 10px;
       cursor: pointer;
-      transition: border-color 0.15s, color 0.15s;
+      padding: 0;
+      transition: background 0.3s ease;
+      flex-shrink: 0;
     }
 
-    .theme-toggle:hover {
-      border-color: var(--fg);
+    .theme-toggle::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 16px;
+      height: 16px;
+      background: var(--bg);
+      border-radius: 50%;
+      transition: transform 0.3s ease, border-radius 0.3s ease;
+    }
+
+    [data-theme="dark"] .theme-toggle::after {
+      transform: translateX(16px);
+      border-radius: 0;
+      -webkit-mask: url("data:image/svg+xml,%3Csvg width='11' height='16' viewBox='0 0 11 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2.22418 0C6.64246 0 10.2242 3.58172 10.2242 8C10.2242 12.4183 6.64246 16 2.22418 16C1.68993 16 1.16802 15.9474 0.663199 15.8473C-0.154284 15.6852-0.198457 14.6129 0.433817 14.07C2.14199 12.6031 3.22418 10.4283 3.22418 8C3.22418 5.57169 2.14216 3.39629 0.434021 1.92922C-0.198245 1.38618-0.153939 0.314081 0.663661 0.152276C1.16837 0.0523934 1.69015 0 2.22418 0Z' fill='black'/%3E%3C/svg%3E") no-repeat right center / contain;
+      mask: url("data:image/svg+xml,%3Csvg width='11' height='16' viewBox='0 0 11 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2.22418 0C6.64246 0 10.2242 3.58172 10.2242 8C10.2242 12.4183 6.64246 16 2.22418 16C1.68993 16 1.16802 15.9474 0.663199 15.8473C-0.154284 15.6852-0.198457 14.6129 0.433817 14.07C2.14199 12.6031 3.22418 10.4283 3.22418 8C3.22418 5.57169 2.14216 3.39629 0.434021 1.92922C-0.198245 1.38618-0.153939 0.314081 0.663661 0.152276C1.16837 0.0523934 1.69015 0 2.22418 0Z' fill='black'/%3E%3C/svg%3E") no-repeat right center / contain;
     }
 
     /* ── Hero ── */
@@ -442,7 +457,7 @@
           <a href="#links">Links</a>
           <a href="#changelog">Changelog</a>
           <a href="#roadmap">Roadmap</a>
-          <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle light/dark mode">● dark</button>
+          <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle light/dark mode"></button>
         </div>
       </nav>
 
@@ -706,24 +721,13 @@
   <script>
     function toggleTheme() {
       const html = document.documentElement;
-      const btn = document.querySelector('.theme-toggle');
-      if (html.dataset.theme === 'light') {
-        html.dataset.theme = 'dark';
-        btn.textContent = '☀ light';
-      } else {
-        html.dataset.theme = 'light';
-        btn.textContent = '● dark';
-      }
+      html.dataset.theme = html.dataset.theme === 'light' ? 'dark' : 'light';
       localStorage.setItem('vg-theme', html.dataset.theme);
     }
 
     (function() {
       const saved = localStorage.getItem('vg-theme');
-      if (saved) {
-        document.documentElement.dataset.theme = saved;
-        const btn = document.querySelector('.theme-toggle');
-        if (btn) btn.textContent = saved === 'light' ? '● dark' : '☀ light';
-      }
+      if (saved) document.documentElement.dataset.theme = saved;
     })();
 
     (function initHeroGrid() {
