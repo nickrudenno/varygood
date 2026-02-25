@@ -212,6 +212,26 @@
       pointer-events: none;
     }
 
+    .hero-cta {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 8px 20px;
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--bg);
+      background: var(--fg);
+      border: none;
+      border-radius: 4px;
+      text-decoration: none;
+      pointer-events: auto;
+      transition: opacity 0.15s;
+    }
+
+    .hero-cta:hover {
+      opacity: 0.8;
+    }
+
     .hero-title {
       font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       font-size: 48px;
@@ -467,6 +487,7 @@
         <div class="hero-content">
           <div class="hero-title">VaryGood</div>
           <div class="hero-sub">Variables and design system generation for Figma</div>
+          <a href="https://www.figma.com/community/plugin/1607369958719962627/varygood" target="_blank" class="hero-cta">Open in Figma</a>
         </div>
       </div>
 
@@ -567,8 +588,8 @@
           <div class="section-label">Links</div>
           <div class="section-body">
             <div class="link-item">
-              <a href="#" target="_blank">Figma Community</a>
-              <span class="dimmer">&mdash; coming soon</span>
+              <a href="https://www.figma.com/community/plugin/1607369958719962627/varygood" target="_blank">Figma Community</a>
+              <span class="dimmer">&mdash; install the plugin</span>
             </div>
             <div class="link-item">
               <a href="#" target="_blank">GitHub Repository</a>
@@ -633,56 +654,8 @@
           <div class="section-label">Roadmap</div>
           <div class="section-body">
             <div class="roadmap-item">
-              <span class="status status-done">done</span>
-              <span>5-step configuration wizard with live preview</span>
-            </div>
-            <div class="roadmap-item">
-              <span class="status status-done">done</span>
-              <span>OKLCH colour scales with dark mode</span>
-            </div>
-            <div class="roadmap-item">
-              <span class="status status-done">done</span>
-              <span>Typography, spacing, radius, and shadow generation</span>
-            </div>
-            <div class="roadmap-item">
-              <span class="status status-done">done</span>
-              <span>Base UI components (Button, Input, Select, Checkbox, Radio, Switch)</span>
-            </div>
-            <div class="roadmap-item">
-              <span class="status status-done">done</span>
-              <span>Icon slot system with semantic colour variants</span>
-            </div>
-            <div class="roadmap-item">
-              <span class="status status-done">done</span>
-              <span>Safe incremental updates with change tracking</span>
-            </div>
-            <div class="roadmap-item">
-              <span class="status status-done">done</span>
-              <span>Selection Inspector with scan, match, apply, and undo</span>
-            </div>
-            <div class="roadmap-item">
-              <span class="status status-done">done</span>
-              <span>Component conflict detection and instance swap</span>
-            </div>
-            <div class="roadmap-item">
-              <span class="status status-done">done</span>
-              <span>Search for similar (bulk variable binding across page)</span>
-            </div>
-            <div class="roadmap-item">
-              <span class="status status-done">done</span>
-              <span>Auto-generated documentation page</span>
-            </div>
-            <div class="roadmap-item">
-              <span class="status status-done">done</span>
-              <span>Component description markdown</span>
-            </div>
-            <div class="roadmap-item">
               <span class="status status-planned">planned</span>
               <span>Preset icon pack integration (Lucide, Heroicons, Material, Font Awesome)</span>
-            </div>
-            <div class="roadmap-item">
-              <span class="status status-done">done</span>
-              <span>Token export (CSS, Tailwind, DTCG JSON, TypeScript)</span>
             </div>
             <div class="roadmap-item">
               <span class="status status-planned">planned</span>
